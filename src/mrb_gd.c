@@ -135,6 +135,20 @@ static mrb_value mrb_gd_image_new_from_bmp(mrb_state *mrb, mrb_value self)
     return mrb_obj_value(Data_Wrap_Struct(mrb, mrb_class_ptr(self), &mrb_gd_image_type, image));
 }
 
+static mrb_value mrb_gd_image_width(mrb_state *mrb, mrb_value self)
+{
+    gdImagePtr image = mrb_get_datatype(mrb, self, &mrb_gd_image_type);
+
+    return mrb_fixnum_value(gdImageSX(image));
+}
+
+static mrb_value mrb_gd_image_height(mrb_state *mrb, mrb_value self)
+{
+    gdImagePtr image = mrb_get_datatype(mrb, self, &mrb_gd_image_type);
+
+    return mrb_fixnum_value(gdImageSY(image));
+}
+
 static mrb_value mrb_gd_image_fill(mrb_state *mrb, mrb_value self)
 {
     mrb_int x, y, color;
@@ -297,6 +311,8 @@ void mrb_GD_gem_init(mrb_state* mrb)
     mrb_define_method(mrb, class_image, "tiff_file", mrb_gd_image_tiff_file, MRB_ARGS_REQ(1));
     mrb_define_method(mrb, class_image, "bmp_file", mrb_gd_image_bmp_file, MRB_ARGS_REQ(2));
 
+    mrb_define_method(mrb, class_image, "width", mrb_gd_image_width, MRB_ARGS_NONE());
+    mrb_define_method(mrb, class_image, "height", mrb_gd_image_height, MRB_ARGS_NONE());
     mrb_define_method(mrb, class_image, "fill", mrb_gd_image_fill, MRB_ARGS_REQ(3));
     mrb_define_method(mrb, class_image, "copy_rotated", mrb_gd_image_copy_rotated, MRB_ARGS_REQ(8));
 }
