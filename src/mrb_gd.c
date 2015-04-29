@@ -45,12 +45,9 @@ static mrb_value mrb_gd_image_new_from_gif(mrb_state *mrb, mrb_value self)
 
     gdImagePtr image = gdImageCreateFromGif(fin);
 
-    DATA_PTR(self) = image;
-    DATA_TYPE(self) = &mrb_gd_image_type;
-
     fclose(fin);
 
-    return self;
+    return mrb_obj_value(Data_Wrap_Struct(mrb, mrb_class_ptr(self), &mrb_gd_image_type, image));
 }
 
 static mrb_value mrb_gd_image_new_from_png(mrb_state *mrb, mrb_value self)
@@ -65,12 +62,9 @@ static mrb_value mrb_gd_image_new_from_png(mrb_state *mrb, mrb_value self)
 
     gdImagePtr image = gdImageCreateFromPng(fin);
 
-    DATA_PTR(self) = image;
-    DATA_TYPE(self) = &mrb_gd_image_type;
-
     fclose(fin);
 
-    return self;
+    return mrb_obj_value(Data_Wrap_Struct(mrb, mrb_class_ptr(self), &mrb_gd_image_type, image));
 }
 
 static mrb_value mrb_gd_image_new_from_jpeg(mrb_state *mrb, mrb_value self)
@@ -85,12 +79,9 @@ static mrb_value mrb_gd_image_new_from_jpeg(mrb_state *mrb, mrb_value self)
 
     gdImagePtr image = gdImageCreateFromJpeg(fin);
 
-    DATA_PTR(self) = image;
-    DATA_TYPE(self) = &mrb_gd_image_type;
-
     fclose(fin);
 
-    return self;
+    return mrb_obj_value(Data_Wrap_Struct(mrb, mrb_class_ptr(self), &mrb_gd_image_type, image));
 }
 
 static mrb_value mrb_gd_image_new_from_wbmp(mrb_state *mrb, mrb_value self)
@@ -105,12 +96,9 @@ static mrb_value mrb_gd_image_new_from_wbmp(mrb_state *mrb, mrb_value self)
 
     gdImagePtr image = gdImageCreateFromWBMP(fin);
 
-    DATA_PTR(self) = image;
-    DATA_TYPE(self) = &mrb_gd_image_type;
-
     fclose(fin);
 
-    return self;
+    return mrb_obj_value(Data_Wrap_Struct(mrb, mrb_class_ptr(self), &mrb_gd_image_type, image));
 }
 
 static mrb_value mrb_gd_image_new_from_tiff(mrb_state *mrb, mrb_value self)
@@ -125,12 +113,9 @@ static mrb_value mrb_gd_image_new_from_tiff(mrb_state *mrb, mrb_value self)
 
     gdImagePtr image = gdImageCreateFromTiff(fin);
 
-    DATA_PTR(self) = image;
-    DATA_TYPE(self) = &mrb_gd_image_type;
-
     fclose(fin);
 
-    return self;
+    return mrb_obj_value(Data_Wrap_Struct(mrb, mrb_class_ptr(self), &mrb_gd_image_type, image));
 }
 
 static mrb_value mrb_gd_image_new_from_bmp(mrb_state *mrb, mrb_value self)
@@ -145,12 +130,9 @@ static mrb_value mrb_gd_image_new_from_bmp(mrb_state *mrb, mrb_value self)
 
     gdImagePtr image = gdImageCreateFromBmp(fin);
 
-    DATA_PTR(self) = image;
-    DATA_TYPE(self) = &mrb_gd_image_type;
-
     fclose(fin);
 
-    return self;
+    return mrb_obj_value(Data_Wrap_Struct(mrb, mrb_class_ptr(self), &mrb_gd_image_type, image));
 }
 
 static mrb_value mrb_gd_image_fill(mrb_state *mrb, mrb_value self)
