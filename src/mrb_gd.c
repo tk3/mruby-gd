@@ -146,6 +146,21 @@ static mrb_value mrb_gd_image_fill(mrb_state *mrb, mrb_value self)
     return self;
 }
 
+static mrb_value mrb_gd_image_copy_rotated(mrb_state *mrb, mrb_value self)
+{
+    mrb_value dst;
+    mrb_float dstX, dstY;
+    mrb_int srcX, srcY, srcWidth, srcHeight, angle;
+    mrb_get_args(mrb, "offiiiii", &dst, &dstX, &dstY, &srcX, &srcY, &srcWidth, &srcHeight, &angle);
+
+    gdImagePtr image_src = mrb_get_datatype(mrb, self, &mrb_gd_image_type);
+    gdImagePtr image_dst = mrb_get_datatype(mrb, dst, &mrb_gd_image_type);
+
+    gdImageCopyRotated(image_dst, image_src, dstX, dstY, srcX, srcY, srcWidth, srcHeight, angle);
+
+    return self;
+}
+
 static mrb_value mrb_gd_image_gif_file(mrb_state *mrb, mrb_value self)
 {
     char *filename;
@@ -283,6 +298,7 @@ void mrb_GD_gem_init(mrb_state* mrb)
     mrb_define_method(mrb, class_image, "bmp_file", mrb_gd_image_bmp_file, MRB_ARGS_REQ(2));
 
     mrb_define_method(mrb, class_image, "fill", mrb_gd_image_fill, MRB_ARGS_REQ(3));
+    mrb_define_method(mrb, class_image, "copy_rotated", mrb_gd_image_copy_rotated, MRB_ARGS_REQ(8));
 }
 
 void mrb_GD_gem_final(mrb_state* mrb)
