@@ -5,12 +5,24 @@
 #include "mruby/data.h"
 #include "gd.h"
 
+typedef struct {
+    gdImagePtr im;
+} mrb_gd_image;
+
+static mrb_gd_image *mrb_gd_image_wrap(mrb_state *mrb, gdImagePtr im)
+{
+    mrb_gd_image *image = (mrb_gd_image *)mrb_malloc(mrb, sizeof(mrb_gd_image));
+    image->im = im;
+    return image;
+}
+
 static void mrb_gd_image_free(mrb_state *mrb, void *p)
 {
-    gdImagePtr image = (gdImagePtr)p;
-    if (image != NULL) {
-        gdImageDestroy(image);
+    mrb_gd_image *image = (mrb_gd_image *)p;
+    if (image->im != NULL) {
+        gdImageDestroy(image->im);
     }
+    mrb_free(mrb, image);
 }
 
 static const mrb_data_type mrb_gd_image_type = {
@@ -22,10 +34,12 @@ static mrb_value mrb_gd_image_initialize(mrb_state *mrb, mrb_value self)
     mrb_int height, width;
     mrb_get_args(mrb, "ii", &height, &width);
 
-    gdImagePtr image = gdImageCreate(height, width);
-    if (image == NULL) {
+    gdImagePtr im = gdImageCreate(height, width);
+    if (im == NULL) {
         return self;
     }
+
+    mrb_gd_image *image = mrb_gd_image_wrap(mrb, im);
 
     DATA_PTR(self) = image;
     DATA_TYPE(self) = &mrb_gd_image_type;
@@ -43,9 +57,11 @@ static mrb_value mrb_gd_image_new_from_gif(mrb_state *mrb, mrb_value self)
         return self;
     }
 
-    gdImagePtr image = gdImageCreateFromGif(fin);
+    gdImagePtr im = gdImageCreateFromGif(fin);
 
     fclose(fin);
+
+    mrb_gd_image *image = mrb_gd_image_wrap(mrb, im);
 
     return mrb_obj_value(Data_Wrap_Struct(mrb, mrb_class_ptr(self), &mrb_gd_image_type, image));
 }
@@ -60,9 +76,11 @@ static mrb_value mrb_gd_image_new_from_png(mrb_state *mrb, mrb_value self)
         return self;
     }
 
-    gdImagePtr image = gdImageCreateFromPng(fin);
+    gdImagePtr im = gdImageCreateFromPng(fin);
 
     fclose(fin);
+
+    mrb_gd_image *image = mrb_gd_image_wrap(mrb, im);
 
     return mrb_obj_value(Data_Wrap_Struct(mrb, mrb_class_ptr(self), &mrb_gd_image_type, image));
 }
@@ -77,9 +95,11 @@ static mrb_value mrb_gd_image_new_from_jpeg(mrb_state *mrb, mrb_value self)
         return self;
     }
 
-    gdImagePtr image = gdImageCreateFromJpeg(fin);
+    gdImagePtr im = gdImageCreateFromJpeg(fin);
 
     fclose(fin);
+
+    mrb_gd_image *image = mrb_gd_image_wrap(mrb, im);
 
     return mrb_obj_value(Data_Wrap_Struct(mrb, mrb_class_ptr(self), &mrb_gd_image_type, image));
 }
@@ -94,9 +114,11 @@ static mrb_value mrb_gd_image_new_from_wbmp(mrb_state *mrb, mrb_value self)
         return self;
     }
 
-    gdImagePtr image = gdImageCreateFromWBMP(fin);
+    gdImagePtr im = gdImageCreateFromWBMP(fin);
 
     fclose(fin);
+
+    mrb_gd_image *image = mrb_gd_image_wrap(mrb, im);
 
     return mrb_obj_value(Data_Wrap_Struct(mrb, mrb_class_ptr(self), &mrb_gd_image_type, image));
 }
@@ -111,9 +133,11 @@ static mrb_value mrb_gd_image_new_from_tiff(mrb_state *mrb, mrb_value self)
         return self;
     }
 
-    gdImagePtr image = gdImageCreateFromTiff(fin);
+    gdImagePtr im = gdImageCreateFromTiff(fin);
 
     fclose(fin);
+
+    mrb_gd_image *image = mrb_gd_image_wrap(mrb, im);
 
     return mrb_obj_value(Data_Wrap_Struct(mrb, mrb_class_ptr(self), &mrb_gd_image_type, image));
 }
@@ -128,25 +152,45 @@ static mrb_value mrb_gd_image_new_from_bmp(mrb_state *mrb, mrb_value self)
         return self;
     }
 
-    gdImagePtr image = gdImageCreateFromBmp(fin);
+    gdImagePtr im = gdImageCreateFromBmp(fin);
 
     fclose(fin);
+
+    mrb_gd_image *image = mrb_gd_image_wrap(mrb, im);
 
     return mrb_obj_value(Data_Wrap_Struct(mrb, mrb_class_ptr(self), &mrb_gd_image_type, image));
 }
 
+static mrb_value mrb_gd_image_destroy(mrb_state *mrb, mrb_value self)
+{
+    mrb_gd_image *image = mrb_get_datatype(mrb, self, &mrb_gd_image_type);
+
+    if (image->im != NULL) {
+        gdImageDestroy(image->im);
+        image->im = NULL;
+    }
+
+    return self;
+}
+
 static mrb_value mrb_gd_image_width(mrb_state *mrb, mrb_value self)
 {
-    gdImagePtr image = mrb_get_datatype(mrb, self, &mrb_gd_image_type);
+    mrb_gd_image *image = mrb_get_datatype(mrb, self, &mrb_gd_image_type);
+    if (image == NULL || image->im == NULL) {
+        return mrb_fixnum_value(0);
+    }
 
-    return mrb_fixnum_value(gdImageSX(image));
+    return mrb_fixnum_value(gdImageSX(image->im));
 }
 
 static mrb_value mrb_gd_image_height(mrb_state *mrb, mrb_value self)
 {
-    gdImagePtr image = mrb_get_datatype(mrb, self, &mrb_gd_image_type);
+    mrb_gd_image *image = mrb_get_datatype(mrb, self, &mrb_gd_image_type);
+    if (image == NULL || image->im == NULL) {
+        return mrb_fixnum_value(0);
+    }
 
-    return mrb_fixnum_value(gdImageSY(image));
+    return mrb_fixnum_value(gdImageSY(image->im));
 }
 
 static mrb_value mrb_gd_image_fill(mrb_state *mrb, mrb_value self)
@@ -154,8 +198,11 @@ static mrb_value mrb_gd_image_fill(mrb_state *mrb, mrb_value self)
     mrb_int x, y, color;
     mrb_get_args(mrb, "iii", &x, &y, &color);
 
-    gdImagePtr image = mrb_get_datatype(mrb, self, &mrb_gd_image_type);
-    gdImageFill(image, x, y, color);
+    mrb_gd_image *image = mrb_get_datatype(mrb, self, &mrb_gd_image_type);
+    if (image == NULL || image->im == NULL) {
+        return self;
+    }
+    gdImageFill(image->im, x, y, color);
 
     return self;
 }
@@ -167,10 +214,13 @@ static mrb_value mrb_gd_image_copy_rotated(mrb_state *mrb, mrb_value self)
     mrb_int srcX, srcY, srcWidth, srcHeight, angle;
     mrb_get_args(mrb, "offiiiii", &dst, &dstX, &dstY, &srcX, &srcY, &srcWidth, &srcHeight, &angle);
 
-    gdImagePtr image_src = mrb_get_datatype(mrb, self, &mrb_gd_image_type);
-    gdImagePtr image_dst = mrb_get_datatype(mrb, dst, &mrb_gd_image_type);
+    mrb_gd_image *image_src = mrb_get_datatype(mrb, self, &mrb_gd_image_type);
+    mrb_gd_image *image_dst = mrb_get_datatype(mrb, dst, &mrb_gd_image_type);
+    if (image_src == NULL || image_src->im == NULL || image_dst == NULL || image_dst->im == NULL) {
+        return self;
+    }
 
-    gdImageCopyRotated(image_dst, image_src, dstX, dstY, srcX, srcY, srcWidth, srcHeight, angle);
+    gdImageCopyRotated(image_dst->im, image_src->im, dstX, dstY, srcX, srcY, srcWidth, srcHeight, angle);
 
     return self;
 }
@@ -181,10 +231,13 @@ static mrb_value mrb_gd_image_copy_resized (mrb_state *mrb, mrb_value self)
     mrb_int dstX, dstY, srcX, srcY, dstW, dstH, srcW, srcH;
     mrb_get_args(mrb, "oiiiiiiii", &dst, &dstX, &dstY, &srcX, &srcY, &dstW, &dstH, &srcW, &srcH);
 
-    gdImagePtr image_src = mrb_get_datatype(mrb, self, &mrb_gd_image_type);
-    gdImagePtr image_dst = mrb_get_datatype(mrb, dst, &mrb_gd_image_type);
+    mrb_gd_image *image_src = mrb_get_datatype(mrb, self, &mrb_gd_image_type);
+    mrb_gd_image *image_dst = mrb_get_datatype(mrb, dst, &mrb_gd_image_type);
+    if (image_src == NULL || image_src->im == NULL || image_dst == NULL || image_dst->im == NULL) {
+        return self;
+    }
 
-    gdImageCopyResized(image_dst, image_src, dstX, dstY, srcX, srcY, dstW, dstH, srcW, srcH);
+    gdImageCopyResized(image_dst->im, image_src->im, dstX, dstY, srcX, srcY, dstW, dstH, srcW, srcH);
 
     return self;
 }
@@ -199,8 +252,11 @@ static mrb_value mrb_gd_image_gif_file(mrb_state *mrb, mrb_value self)
         return self;
     }
 
-    gdImagePtr image = mrb_get_datatype(mrb, self, &mrb_gd_image_type);
-    gdImageGif(image, fout);
+    mrb_gd_image *image = mrb_get_datatype(mrb, self, &mrb_gd_image_type);
+    if (image == NULL || image->im == NULL) {
+        return self;
+    }
+    gdImageGif(image->im, fout);
 
     fclose(fout);
 
@@ -217,8 +273,11 @@ static mrb_value mrb_gd_image_png_file(mrb_state *mrb, mrb_value self)
         return self;
     }
 
-    gdImagePtr image = mrb_get_datatype(mrb, self, &mrb_gd_image_type);
-    gdImagePng(image, fout);
+    mrb_gd_image *image = mrb_get_datatype(mrb, self, &mrb_gd_image_type);
+    if (image == NULL || image->im == NULL) {
+        return self;
+    }
+    gdImagePng(image->im, fout);
 
     fclose(fout);
 
@@ -236,8 +295,11 @@ static mrb_value mrb_gd_image_jpeg_file(mrb_state *mrb, mrb_value self)
         return self;
     }
 
-    gdImagePtr image = mrb_get_datatype(mrb, self, &mrb_gd_image_type);
-    gdImageJpeg(image, fout, quality);
+    mrb_gd_image *image = mrb_get_datatype(mrb, self, &mrb_gd_image_type);
+    if (image == NULL || image->im == NULL) {
+        return self;
+    }
+    gdImageJpeg(image->im, fout, quality);
 
     fclose(fout);
 
@@ -255,8 +317,11 @@ static mrb_value mrb_gd_image_wbmp_file(mrb_state *mrb, mrb_value self)
         return self;
     }
 
-    gdImagePtr image = mrb_get_datatype(mrb, self, &mrb_gd_image_type);
-    gdImageWBMP(image, fg, fout);
+    mrb_gd_image *image = mrb_get_datatype(mrb, self, &mrb_gd_image_type);
+    if (image == NULL || image->im == NULL) {
+        return self;
+    }
+    gdImageWBMP(image->im, fg, fout);
 
     fclose(fout);
 
@@ -273,8 +338,11 @@ static mrb_value mrb_gd_image_tiff_file(mrb_state *mrb, mrb_value self)
         return self;
     }
 
-    gdImagePtr image = mrb_get_datatype(mrb, self, &mrb_gd_image_type);
-    gdImageTiff(image, fout);
+    mrb_gd_image *image = mrb_get_datatype(mrb, self, &mrb_gd_image_type);
+    if (image == NULL || image->im == NULL) {
+        return self;
+    }
+    gdImageTiff(image->im, fout);
 
     fclose(fout);
 
@@ -292,8 +360,11 @@ static mrb_value mrb_gd_image_bmp_file(mrb_state *mrb, mrb_value self)
         return self;
     }
 
-    gdImagePtr image = mrb_get_datatype(mrb, self, &mrb_gd_image_type);
-    gdImageBmp(image, fout, compression);
+    mrb_gd_image *image = mrb_get_datatype(mrb, self, &mrb_gd_image_type);
+    if (image == NULL || image->im == NULL) {
+        return self;
+    }
+    gdImageBmp(image->im, fout, compression);
 
     fclose(fout);
 
@@ -317,6 +388,7 @@ void mrb_GD_gem_init(mrb_state* mrb)
     mrb_define_class_method(mrb, class_image, "new_from_wbmp", mrb_gd_image_new_from_wbmp, MRB_ARGS_REQ(1));
     mrb_define_class_method(mrb, class_image, "new_from_tiff", mrb_gd_image_new_from_tiff, MRB_ARGS_REQ(1));
     mrb_define_class_method(mrb, class_image, "new_from_bmp", mrb_gd_image_new_from_bmp, MRB_ARGS_REQ(1));
+    mrb_define_method(mrb, class_image, "destroy", mrb_gd_image_destroy, MRB_ARGS_NONE());
 
     mrb_define_method(mrb, class_image, "gif_file", mrb_gd_image_gif_file, MRB_ARGS_REQ(1));
     mrb_define_method(mrb, class_image, "png_file", mrb_gd_image_png_file, MRB_ARGS_REQ(1));
