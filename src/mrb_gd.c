@@ -242,6 +242,176 @@ static mrb_value mrb_gd_image_copy_resized (mrb_state *mrb, mrb_value self)
     return self;
 }
 
+static mrb_value mrb_gd_color_allocate(mrb_state *mrb, mrb_value self)
+{
+    mrb_int r, g, b;
+    mrb_get_args(mrb, "iii", &r, &g, &b);
+
+    mrb_gd_image *image = mrb_get_datatype(mrb, self, &mrb_gd_image_type);
+    if (image == NULL || image->im == NULL) {
+        return self;
+    }
+
+    int c = gdImageColorAllocate(image->im, r, g, b);
+
+    return mrb_fixnum_value(c);
+}
+
+static mrb_value mrb_gd_color_allocate_alpha(mrb_state *mrb, mrb_value self)
+{
+    mrb_int r, g, b, alpha;
+    mrb_get_args(mrb, "iiii", &r, &g, &b, &alpha);
+
+    mrb_gd_image *image = mrb_get_datatype(mrb, self, &mrb_gd_image_type);
+    if (image == NULL || image->im == NULL) {
+        return mrb_fixnum_value(-1);
+    }
+
+    int c = gdImageColorAllocateAlpha(image->im, r, g, b, alpha);
+
+    return mrb_fixnum_value(c);
+}
+
+static mrb_value mrb_gd_color_closest(mrb_state *mrb, mrb_value self)
+{
+    mrb_int r, g, b;
+    mrb_get_args(mrb, "iii", &r, &g, &b);
+
+    mrb_gd_image *image = mrb_get_datatype(mrb, self, &mrb_gd_image_type);
+    if (image == NULL || image->im == NULL) {
+        return mrb_fixnum_value(-1);
+    }
+
+    int c = gdImageColorClosest(image->im, r, g, b);
+
+    return mrb_fixnum_value(c);
+}
+
+static mrb_value mrb_gd_color_closest_alpha(mrb_state *mrb, mrb_value self)
+{
+    mrb_int r, g, b, alpha;
+    mrb_get_args(mrb, "iiii", &r, &g, &b, &alpha);
+
+    mrb_gd_image *image = mrb_get_datatype(mrb, self, &mrb_gd_image_type);
+    if (image == NULL || image->im == NULL) {
+        return mrb_fixnum_value(-1);
+    }
+
+    int c = gdImageColorClosestAlpha(image->im, r, g, b, alpha);
+
+    return mrb_fixnum_value(c);
+}
+
+static mrb_value mrb_gd_color_closest_hwb(mrb_state *mrb, mrb_value self)
+{
+    mrb_int r, g, b;
+    mrb_get_args(mrb, "iii", &r, &g, &b);
+
+    mrb_gd_image *image = mrb_get_datatype(mrb, self, &mrb_gd_image_type);
+    if (image == NULL || image->im == NULL) {
+        return mrb_fixnum_value(-1);
+    }
+
+    int c = gdImageColorClosestHWB(image->im, r, g, b);
+
+    return mrb_fixnum_value(c);
+}
+
+static mrb_value mrb_gd_color_exact(mrb_state *mrb, mrb_value self)
+{
+    mrb_int r, g, b;
+    mrb_get_args(mrb, "iii", &r, &g, &b);
+
+    mrb_gd_image *image = mrb_get_datatype(mrb, self, &mrb_gd_image_type);
+    if (image == NULL || image->im == NULL) {
+        return mrb_fixnum_value(-1);
+    }
+
+    int c = gdImageColorExact(image->im, r, g, b);
+
+    return mrb_fixnum_value(c);
+}
+
+static mrb_value mrb_gd_color_exact_alpha(mrb_state *mrb, mrb_value self)
+{
+    mrb_int r, g, b, alpha;
+    mrb_get_args(mrb, "iiii", &r, &g, &b, &alpha);
+
+    mrb_gd_image *image = mrb_get_datatype(mrb, self, &mrb_gd_image_type);
+    if (image == NULL || image->im == NULL) {
+        return mrb_fixnum_value(-1);
+    }
+
+    int c = gdImageColorExactAlpha(image->im, r, g, b, alpha);
+
+    return mrb_fixnum_value(c);
+}
+
+static mrb_value mrb_gd_color_resolve(mrb_state *mrb, mrb_value self)
+{
+    mrb_int r, g, b;
+    mrb_get_args(mrb, "iii", &r, &g, &b);
+
+    mrb_gd_image *image = mrb_get_datatype(mrb, self, &mrb_gd_image_type);
+    if (image == NULL || image->im == NULL) {
+        return mrb_fixnum_value(-1);
+    }
+
+    int c = gdImageColorResolve(image->im, r, g, b);
+
+    return mrb_fixnum_value(c);
+}
+
+static mrb_value mrb_gd_color_resolve_alpha(mrb_state *mrb, mrb_value self)
+{
+    mrb_int r, g, b, alpha;
+    mrb_get_args(mrb, "iiii", &r, &g, &b, &alpha);
+
+    mrb_gd_image *image = mrb_get_datatype(mrb, self, &mrb_gd_image_type);
+    if (image == NULL || image->im == NULL) {
+        return mrb_fixnum_value(-1);
+    }
+
+    int c = gdImageColorResolveAlpha(image->im, r, g, b, alpha);
+
+    return mrb_fixnum_value(c);
+}
+
+static mrb_value mrb_gd_truecolor(mrb_state *mrb, mrb_value self)
+{
+    mrb_int r, g, b;
+    mrb_get_args(mrb, "iii", &r, &g, &b);
+
+    int c = gdTrueColor(r, g, b);
+
+    return mrb_fixnum_value(c);
+}
+
+static mrb_value mrb_gd_truecolor_alpha(mrb_state *mrb, mrb_value self)
+{
+    mrb_int r, g, b, alpha;
+    mrb_get_args(mrb, "iiii", &r, &g, &b, &alpha);
+
+    int c = gdTrueColorAlpha(r, g, b, alpha);
+
+    return mrb_fixnum_value(c);
+}
+
+static mrb_value mrb_gd_color_deallocate(mrb_state *mrb, mrb_value self)
+{
+    mrb_int color;
+    mrb_get_args(mrb, "i", &color);
+
+    mrb_gd_image *image = mrb_get_datatype(mrb, self, &mrb_gd_image_type);
+    if (image == NULL || image->im == NULL) {
+        return self;
+    }
+
+    gdImageColorDeallocate(image->im, color);
+
+    return self;
+}
+
 static mrb_value mrb_gd_image_gif_file(mrb_state *mrb, mrb_value self)
 {
     char *filename;
@@ -402,6 +572,19 @@ void mrb_GD_gem_init(mrb_state* mrb)
     mrb_define_method(mrb, class_image, "fill", mrb_gd_image_fill, MRB_ARGS_REQ(3));
     mrb_define_method(mrb, class_image, "copy_rotated", mrb_gd_image_copy_rotated, MRB_ARGS_REQ(8));
     mrb_define_method(mrb, class_image, "copy_resized", mrb_gd_image_copy_resized, MRB_ARGS_REQ(9));
+
+    mrb_define_method(mrb, class_image, "color_allocate", mrb_gd_color_allocate, MRB_ARGS_REQ(3));
+    mrb_define_method(mrb, class_image, "color_allocate_alpha", mrb_gd_color_allocate_alpha, MRB_ARGS_REQ(4));
+    mrb_define_method(mrb, class_image, "color_closest", mrb_gd_color_closest, MRB_ARGS_REQ(3));
+    mrb_define_method(mrb, class_image, "color_closest_alpha", mrb_gd_color_closest_alpha, MRB_ARGS_REQ(4));
+    mrb_define_method(mrb, class_image, "color_closest_hwb", mrb_gd_color_closest_hwb, MRB_ARGS_REQ(3));
+    mrb_define_method(mrb, class_image, "color_exact", mrb_gd_color_exact, MRB_ARGS_REQ(3));
+    mrb_define_method(mrb, class_image, "color_exact_alpha", mrb_gd_color_exact_alpha, MRB_ARGS_REQ(4));
+    mrb_define_method(mrb, class_image, "color_resolve", mrb_gd_color_resolve, MRB_ARGS_REQ(3));
+    mrb_define_method(mrb, class_image, "color_resolve_alpha", mrb_gd_color_resolve_alpha, MRB_ARGS_REQ(4));
+    mrb_define_class_method(mrb, class_image, "truecolor", mrb_gd_truecolor, MRB_ARGS_REQ(3));
+    mrb_define_class_method(mrb, class_image, "truecolor_alpha", mrb_gd_truecolor_alpha, MRB_ARGS_REQ(4));
+    mrb_define_method(mrb, class_image, "color_deallocate", mrb_gd_color_deallocate, MRB_ARGS_REQ(1));
 }
 
 void mrb_GD_gem_final(mrb_state* mrb)
