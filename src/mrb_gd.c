@@ -193,6 +193,111 @@ static mrb_value mrb_gd_image_height(mrb_state *mrb, mrb_value self)
     return mrb_fixnum_value(gdImageSY(image->im));
 }
 
+static mrb_value mrb_gd_image_set_pixel(mrb_state *mrb, mrb_value self)
+{
+    mrb_int x, y, color;
+    mrb_get_args(mrb, "iii", &x, &y, &color);
+
+    mrb_gd_image *image = mrb_get_datatype(mrb, self, &mrb_gd_image_type);
+    if (image == NULL || image->im == NULL) {
+        return self;
+    }
+
+    gdImageSetPixel(image->im, x, y, color);
+
+    return self;
+}
+
+static mrb_value mrb_gd_image_get_pixel(mrb_state *mrb, mrb_value self)
+{
+    mrb_int x, y;
+    mrb_get_args(mrb, "ii", &x, &y);
+
+    mrb_gd_image *image = mrb_get_datatype(mrb, self, &mrb_gd_image_type);
+    if (image == NULL || image->im == NULL) {
+        return mrb_fixnum_value(-1);
+    }
+
+    int c = gdImageGetPixel(image->im, x, y);
+
+    return mrb_fixnum_value(c);
+}
+
+static mrb_value mrb_gd_image_get_truecolor_pixel(mrb_state *mrb, mrb_value self)
+{
+    mrb_int x, y;
+    mrb_get_args(mrb, "ii", &x, &y);
+
+    mrb_gd_image *image = mrb_get_datatype(mrb, self, &mrb_gd_image_type);
+    if (image == NULL || image->im == NULL) {
+        return mrb_fixnum_value(-1);
+    }
+
+    int c = gdImageGetTrueColorPixel(image->im, x, y);
+
+    return mrb_fixnum_value(c);
+}
+
+static mrb_value mrb_gd_image_line(mrb_state *mrb, mrb_value self)
+{
+    mrb_int x1, y1, x2, y2, color;
+    mrb_get_args(mrb, "iiiii", &x1, &y1, &x2, &y2, &color);
+
+    mrb_gd_image *image = mrb_get_datatype(mrb, self, &mrb_gd_image_type);
+    if (image == NULL || image->im == NULL) {
+        return self;
+    }
+
+    gdImageLine(image->im, x1, y1, x2, y2, color);
+
+    return self;
+}
+
+static mrb_value mrb_gd_image_dashed_line(mrb_state *mrb, mrb_value self)
+{
+    mrb_int x1, y1, x2, y2, color;
+    mrb_get_args(mrb, "iiiii", &x1, &y1, &x2, &y2, &color);
+
+    mrb_gd_image *image = mrb_get_datatype(mrb, self, &mrb_gd_image_type);
+    if (image == NULL || image->im == NULL) {
+        return self;
+    }
+
+    gdImageDashedLine(image->im, x1, y1, x2, y2, color);
+
+    return self;
+}
+
+static mrb_value mrb_gd_image_rectangle(mrb_state *mrb, mrb_value self)
+{
+    mrb_int x1, y1, x2, y2, color;
+    mrb_get_args(mrb, "iiiii", &x1, &y1, &x2, &y2, &color);
+
+    mrb_gd_image *image = mrb_get_datatype(mrb, self, &mrb_gd_image_type);
+    if (image == NULL || image->im == NULL) {
+        return self;
+    }
+
+    gdImageRectangle(image->im, x1, y1, x2, y2, color);
+
+    return self;
+}
+
+static mrb_value mrb_gd_image_filled_rectangle(mrb_state *mrb, mrb_value self)
+{
+    mrb_int x1, y1, x2, y2, color;
+    mrb_get_args(mrb, "iiiii", &x1, &y1, &x2, &y2, &color);
+
+    mrb_gd_image *image = mrb_get_datatype(mrb, self, &mrb_gd_image_type);
+    if (image == NULL || image->im == NULL) {
+        return self;
+    }
+
+    gdImageFilledRectangle(image->im, x1, y1, x2, y2, color);
+
+    return self;
+}
+
 static mrb_value mrb_gd_image_fill(mrb_state *mrb, mrb_value self)
 {
     mrb_int x, y, color;
@@ -569,6 +674,13 @@ void mrb_GD_gem_init(mrb_state* mrb)
 
     mrb_define_method(mrb, class_image, "width", mrb_gd_image_width, MRB_ARGS_NONE());
     mrb_define_method(mrb, class_image, "height", mrb_gd_image_height, MRB_ARGS_NONE());
+    mrb_define_method(mrb, class_image, "set_pixel", mrb_gd_image_set_pixel, MRB_ARGS_REQ(3));
+    mrb_define_method(mrb, class_image, "get_pixel", mrb_gd_image_get_pixel, MRB_ARGS_REQ(2));
+    mrb_define_method(mrb, class_image, "get_truecolor_pixel", mrb_gd_image_get_truecolor_pixel, MRB_ARGS_REQ(2));
+    mrb_define_method(mrb, class_image, "line", mrb_gd_image_line, MRB_ARGS_REQ(5));
+    mrb_define_method(mrb, class_image, "dashed_line", mrb_gd_image_dashed_line, MRB_ARGS_REQ(5));
+    mrb_define_method(mrb, class_image, "rectangle", mrb_gd_image_rectangle, MRB_ARGS_REQ(5));
+    mrb_define_method(mrb, class_image, "filled_rectangle", mrb_gd_image_filled_rectangle, MRB_ARGS_REQ(5));
     mrb_define_method(mrb, class_image, "fill", mrb_gd_image_fill, MRB_ARGS_REQ(3));
     mrb_define_method(mrb, class_image, "copy_rotated", mrb_gd_image_copy_rotated, MRB_ARGS_REQ(8));
     mrb_define_method(mrb, class_image, "copy_resized", mrb_gd_image_copy_resized, MRB_ARGS_REQ(9));
