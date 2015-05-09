@@ -47,7 +47,7 @@ static mrb_value mrb_gd_image_initialize(mrb_state *mrb, mrb_value self)
     return self;
 }
 
-static mrb_value mrb_gd_image_new_from_gif(mrb_state *mrb, mrb_value self)
+static mrb_value mrb_gd_image_new_from_gif_file(mrb_state *mrb, mrb_value self)
 {
     char *filename;
     mrb_get_args(mrb, "z", &filename);
@@ -66,7 +66,7 @@ static mrb_value mrb_gd_image_new_from_gif(mrb_state *mrb, mrb_value self)
     return mrb_obj_value(Data_Wrap_Struct(mrb, mrb_class_ptr(self), &mrb_gd_image_type, image));
 }
 
-static mrb_value mrb_gd_image_new_from_png(mrb_state *mrb, mrb_value self)
+static mrb_value mrb_gd_image_new_from_png_file(mrb_state *mrb, mrb_value self)
 {
     char *filename;
     mrb_get_args(mrb, "z", &filename);
@@ -85,7 +85,7 @@ static mrb_value mrb_gd_image_new_from_png(mrb_state *mrb, mrb_value self)
     return mrb_obj_value(Data_Wrap_Struct(mrb, mrb_class_ptr(self), &mrb_gd_image_type, image));
 }
 
-static mrb_value mrb_gd_image_new_from_jpeg(mrb_state *mrb, mrb_value self)
+static mrb_value mrb_gd_image_new_from_jpeg_file(mrb_state *mrb, mrb_value self)
 {
     char *filename;
     mrb_get_args(mrb, "z", &filename);
@@ -104,7 +104,7 @@ static mrb_value mrb_gd_image_new_from_jpeg(mrb_state *mrb, mrb_value self)
     return mrb_obj_value(Data_Wrap_Struct(mrb, mrb_class_ptr(self), &mrb_gd_image_type, image));
 }
 
-static mrb_value mrb_gd_image_new_from_wbmp(mrb_state *mrb, mrb_value self)
+static mrb_value mrb_gd_image_new_from_wbmp_file(mrb_state *mrb, mrb_value self)
 {
     char *filename;
     mrb_get_args(mrb, "z", &filename);
@@ -123,7 +123,7 @@ static mrb_value mrb_gd_image_new_from_wbmp(mrb_state *mrb, mrb_value self)
     return mrb_obj_value(Data_Wrap_Struct(mrb, mrb_class_ptr(self), &mrb_gd_image_type, image));
 }
 
-static mrb_value mrb_gd_image_new_from_tiff(mrb_state *mrb, mrb_value self)
+static mrb_value mrb_gd_image_new_from_tiff_file(mrb_state *mrb, mrb_value self)
 {
     char *filename;
     mrb_get_args(mrb, "z", &filename);
@@ -142,7 +142,7 @@ static mrb_value mrb_gd_image_new_from_tiff(mrb_state *mrb, mrb_value self)
     return mrb_obj_value(Data_Wrap_Struct(mrb, mrb_class_ptr(self), &mrb_gd_image_type, image));
 }
 
-static mrb_value mrb_gd_image_new_from_bmp(mrb_state *mrb, mrb_value self)
+static mrb_value mrb_gd_image_new_from_bmp_file(mrb_state *mrb, mrb_value self)
 {
     char *filename;
     mrb_get_args(mrb, "z", &filename);
@@ -657,12 +657,12 @@ void mrb_GD_gem_init(mrb_state* mrb)
 
     mrb_define_method(mrb, class_image, "initialize", mrb_gd_image_initialize, MRB_ARGS_REQ(2));
 
-    mrb_define_class_method(mrb, class_image, "new_from_gif", mrb_gd_image_new_from_gif, MRB_ARGS_REQ(1));
-    mrb_define_class_method(mrb, class_image, "new_from_png", mrb_gd_image_new_from_png, MRB_ARGS_REQ(1));
-    mrb_define_class_method(mrb, class_image, "new_from_jpeg", mrb_gd_image_new_from_jpeg, MRB_ARGS_REQ(1));
-    mrb_define_class_method(mrb, class_image, "new_from_wbmp", mrb_gd_image_new_from_wbmp, MRB_ARGS_REQ(1));
-    mrb_define_class_method(mrb, class_image, "new_from_tiff", mrb_gd_image_new_from_tiff, MRB_ARGS_REQ(1));
-    mrb_define_class_method(mrb, class_image, "new_from_bmp", mrb_gd_image_new_from_bmp, MRB_ARGS_REQ(1));
+    mrb_define_class_method(mrb, class_image, "new_from_gif_file", mrb_gd_image_new_from_gif_file, MRB_ARGS_REQ(1));
+    mrb_define_class_method(mrb, class_image, "new_from_png_file", mrb_gd_image_new_from_png_file, MRB_ARGS_REQ(1));
+    mrb_define_class_method(mrb, class_image, "new_from_jpeg_file", mrb_gd_image_new_from_jpeg_file, MRB_ARGS_REQ(1));
+    mrb_define_class_method(mrb, class_image, "new_from_wbmp_file", mrb_gd_image_new_from_wbmp_file, MRB_ARGS_REQ(1));
+    mrb_define_class_method(mrb, class_image, "new_from_tiff_file", mrb_gd_image_new_from_tiff_file, MRB_ARGS_REQ(1));
+    mrb_define_class_method(mrb, class_image, "new_from_bmp_file", mrb_gd_image_new_from_bmp_file, MRB_ARGS_REQ(1));
     mrb_define_method(mrb, class_image, "destroy", mrb_gd_image_destroy, MRB_ARGS_NONE());
 
     mrb_define_method(mrb, class_image, "gif_file", mrb_gd_image_gif_file, MRB_ARGS_REQ(1));
