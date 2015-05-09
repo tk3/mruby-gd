@@ -38,7 +38,7 @@ im.destroy
 - Rotate a image (counterclockwise 30 degrees)
 
 ```
-im = GD::Image.new_from_jpeg 'in.jpeg'
+im = GD::Image.new_from_jpeg_file 'in.jpeg'
 im_out = GD::Image.new im.width, im.height
 im.copy_rotated im_out, im.width/2, im.height/2, 0, 0, im.width, im.height, 30
 im_out.jpeg_file 'rotate.jpeg', 90
@@ -49,7 +49,7 @@ im_out.destroy
 - Resize a image
 
 ```
-im = GD::Image.new_from_jpeg 'in.jpeg'
+im = GD::Image.new_from_jpeg_file 'in.jpeg'
 im_out = GD::Image.new (im.width/2).floor, (im.height/2).floor
 im.copy_resized im_out, 0, 0, 0, 0, im.width/2, im.height/2, im.width, im.height
 im_out.jpeg_file 'resized.jpeg', 90
