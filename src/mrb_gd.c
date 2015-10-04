@@ -291,6 +291,57 @@ static mrb_value mrb_gd_image_get_truecolor_pixel(mrb_state *mrb, mrb_value self
     return mrb_fixnum_value(c);
 }
 
+static mrb_value mrb_gd_image_interlace(mrb_state *mrb, mrb_value self)
+{
+    mrb_bool flag;
+    mrb_gd_image *image;
+
+    mrb_get_args(mrb, "b", &flag);
+
+    image = mrb_get_datatype(mrb, self, &mrb_gd_image_type);
+    if (image == NULL || image->im == NULL) {
+        return mrb_fixnum_value(-1);
+    }
+
+    gdImageInterlace(image->im, flag);
+
+    return mrb_nil_value();
+}
+
+static mrb_value mrb_gd_image_alpha_blending(mrb_state *mrb, mrb_value self)
+{
+    mrb_bool flag;
+    mrb_gd_image *image;
+
+    mrb_get_args(mrb, "b", &flag);
+
+    image = mrb_get_datatype(mrb, self, &mrb_gd_image_type);
+    if (image == NULL || image->im == NULL) {
+        return mrb_fixnum_value(-1);
+    }
+
+    gdImageAlphaBlending(image->im, flag);
+
+    return mrb_nil_value();
+}
+
+static mrb_value mrb_gd_image_save_alpha(mrb_state *mrb, mrb_value self)
+{
+    mrb_bool flag;
+    mrb_gd_image *image;
+
+    mrb_get_args(mrb, "b", &flag);
+
+    image = mrb_get_datatype(mrb, self, &mrb_gd_image_type);
+    if (image == NULL || image->im == NULL) {
+        return mrb_fixnum_value(-1);
+    }
+
+    gdImageSaveAlpha(image->im, flag);
+
+    return mrb_nil_value();
+}
+
 static mrb_value mrb_gd_image_line(mrb_state *mrb, mrb_value self)
 {
     mrb_int x1, y1, x2, y2, color;
@@ -768,6 +819,10 @@ void mrb_mruby_gd_gem_init(mrb_state* mrb)
     mrb_define_method(mrb, class_image, "set_pixel", mrb_gd_image_set_pixel, MRB_ARGS_REQ(3));
     mrb_define_method(mrb, class_image, "get_pixel", mrb_gd_image_get_pixel, MRB_ARGS_REQ(2));
     mrb_define_method(mrb, class_image, "get_truecolor_pixel", mrb_gd_image_get_truecolor_pixel, MRB_ARGS_REQ(2));
+    mrb_define_method(mrb, class_image, "interlace", mrb_gd_image_interlace, MRB_ARGS_REQ(1));
+    mrb_define_method(mrb, class_image, "alpha_blending", mrb_gd_image_alpha_blending, MRB_ARGS_REQ(1));
+    mrb_define_method(mrb, class_image, "save_alpha", mrb_gd_image_save_alpha, MRB_ARGS_REQ(1));
+
     mrb_define_method(mrb, class_image, "line", mrb_gd_image_line, MRB_ARGS_REQ(5));
     mrb_define_method(mrb, class_image, "dashed_line", mrb_gd_image_dashed_line, MRB_ARGS_REQ(5));
     mrb_define_method(mrb, class_image, "rectangle", mrb_gd_image_rectangle, MRB_ARGS_REQ(5));
