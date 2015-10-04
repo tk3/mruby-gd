@@ -9,6 +9,51 @@ typedef struct {
     gdImagePtr im;
 } mrb_gd_image;
 
+static mrb_gd_image *mrb_gd_image_wrap(mrb_state *mrb, gdImagePtr im);
+static void mrb_gd_image_free(mrb_state *mrb, void *p);
+static mrb_value mrb_gd_image_initialize(mrb_state *mrb, mrb_value self);
+static mrb_value mrb_gd_image_new_from_gif_file(mrb_state *mrb, mrb_value self);
+static mrb_value mrb_gd_image_new_from_png_file(mrb_state *mrb, mrb_value self);
+static mrb_value mrb_gd_image_new_from_jpeg_file(mrb_state *mrb, mrb_value self);
+static mrb_value mrb_gd_image_new_from_wbmp_file(mrb_state *mrb, mrb_value self);
+static mrb_value mrb_gd_image_new_from_gif_data(mrb_state *mrb, mrb_value self);
+static mrb_value mrb_gd_image_new_from_png_data(mrb_state *mrb, mrb_value self);
+static mrb_value mrb_gd_image_new_from_jpeg_data(mrb_state *mrb, mrb_value self);
+static mrb_value mrb_gd_image_new_from_wbmp_data(mrb_state *mrb, mrb_value self);
+static mrb_value mrb_gd_image_destroy(mrb_state *mrb, mrb_value self);
+static mrb_value mrb_gd_image_width(mrb_state *mrb, mrb_value self);
+static mrb_value mrb_gd_image_height(mrb_state *mrb, mrb_value self);
+static mrb_value mrb_gd_image_set_pixel(mrb_state *mrb, mrb_value self);
+static mrb_value mrb_gd_image_get_pixel(mrb_state *mrb, mrb_value self);
+static mrb_value mrb_gd_image_get_truecolor_pixel(mrb_state *mrb, mrb_value self);
+static mrb_value mrb_gd_image_interlace(mrb_state *mrb, mrb_value self);
+static mrb_value mrb_gd_image_alpha_blending(mrb_state *mrb, mrb_value self);
+static mrb_value mrb_gd_image_save_alpha(mrb_state *mrb, mrb_value self);
+static mrb_value mrb_gd_image_line(mrb_state *mrb, mrb_value self);
+static mrb_value mrb_gd_image_dashed_line(mrb_state *mrb, mrb_value self);
+static mrb_value mrb_gd_image_rectangle(mrb_state *mrb, mrb_value self);
+static mrb_value mrb_gd_image_filled_rectangle(mrb_state *mrb, mrb_value self);
+static mrb_value mrb_gd_image_fill(mrb_state *mrb, mrb_value self);
+static mrb_value mrb_gd_image_copy_rotated(mrb_state *mrb, mrb_value self);
+static mrb_value mrb_gd_image_copy_resized (mrb_state *mrb, mrb_value self);
+static mrb_value mrb_gd_image_copy_resampled(mrb_state *mrb, mrb_value self);
+static mrb_value mrb_gd_color_allocate(mrb_state *mrb, mrb_value self);
+static mrb_value mrb_gd_color_allocate_alpha(mrb_state *mrb, mrb_value self);
+static mrb_value mrb_gd_color_closest(mrb_state *mrb, mrb_value self);
+static mrb_value mrb_gd_color_closest_alpha(mrb_state *mrb, mrb_value self);
+static mrb_value mrb_gd_color_closest_hwb(mrb_state *mrb, mrb_value self);
+static mrb_value mrb_gd_color_exact(mrb_state *mrb, mrb_value self);
+static mrb_value mrb_gd_color_exact_alpha(mrb_state *mrb, mrb_value self);
+static mrb_value mrb_gd_color_resolve(mrb_state *mrb, mrb_value self);
+static mrb_value mrb_gd_color_resolve_alpha(mrb_state *mrb, mrb_value self);
+static mrb_value mrb_gd_truecolor(mrb_state *mrb, mrb_value self);
+static mrb_value mrb_gd_truecolor_alpha(mrb_state *mrb, mrb_value self);
+static mrb_value mrb_gd_color_deallocate(mrb_state *mrb, mrb_value self);
+static mrb_value mrb_gd_image_gif_file(mrb_state *mrb, mrb_value self);
+static mrb_value mrb_gd_image_png_file(mrb_state *mrb, mrb_value self);
+static mrb_value mrb_gd_image_jpeg_file(mrb_state *mrb, mrb_value self);
+static mrb_value mrb_gd_image_wbmp_file(mrb_state *mrb, mrb_value self);
+
 static mrb_gd_image *mrb_gd_image_wrap(mrb_state *mrb, gdImagePtr im)
 {
     mrb_gd_image *image = (mrb_gd_image *)mrb_malloc(mrb, sizeof(mrb_gd_image));
