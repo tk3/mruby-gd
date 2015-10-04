@@ -705,6 +705,7 @@ static mrb_value mrb_gd_image_gif_file(mrb_state *mrb, mrb_value self)
 
     image = mrb_get_datatype(mrb, self, &mrb_gd_image_type);
     if (image == NULL || image->im == NULL) {
+        fclose(fout);
         return self;
     }
     gdImageGif(image->im, fout);
@@ -729,6 +730,7 @@ static mrb_value mrb_gd_image_png_file(mrb_state *mrb, mrb_value self)
 
     image = mrb_get_datatype(mrb, self, &mrb_gd_image_type);
     if (image == NULL || image->im == NULL) {
+        fclose(fout);
         return self;
     }
     gdImagePng(image->im, fout);
@@ -754,6 +756,7 @@ static mrb_value mrb_gd_image_jpeg_file(mrb_state *mrb, mrb_value self)
 
     image = mrb_get_datatype(mrb, self, &mrb_gd_image_type);
     if (image == NULL || image->im == NULL) {
+        fclose(fout);
         return self;
     }
     gdImageJpeg(image->im, fout, quality);
@@ -779,6 +782,7 @@ static mrb_value mrb_gd_image_wbmp_file(mrb_state *mrb, mrb_value self)
 
     image = mrb_get_datatype(mrb, self, &mrb_gd_image_type);
     if (image == NULL || image->im == NULL) {
+        fclose(fout);
         return self;
     }
     gdImageWBMP(image->im, fg, fout);
