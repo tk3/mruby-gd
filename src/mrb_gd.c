@@ -416,6 +416,26 @@ static mrb_value mrb_gd_image_copy_resized (mrb_state *mrb, mrb_value self)
     return self;
 }
 
+static mrb_value mrb_gd_image_copy_resampled(mrb_state *mrb, mrb_value self)
+{
+    mrb_value dst;
+    mrb_int dstX, dstY, srcX, srcY, dstW, dstH, srcW, srcH;
+    mrb_gd_image *image_src;
+    mrb_gd_image *image_dst;
+
+    mrb_get_args(mrb, "oiiiiiiii", &dst, &dstX, &dstY, &srcX, &srcY, &dstW, &dstH, &srcW, &srcH);
+
+    image_src = mrb_get_datatype(mrb, self, &mrb_gd_image_type);
+    image_dst = mrb_get_datatype(mrb, dst, &mrb_gd_image_type);
+    if (image_src == NULL || image_src->im == NULL || image_dst == NULL || image_dst->im == NULL) {
+        return self;
+    }
+
+    gdImageCopyResampled(image_dst->im, image_src->im, dstX, dstY, srcX, srcY, dstW, dstH, srcW, srcH);
+
+    return self;
+}
+
 static mrb_value mrb_gd_color_allocate(mrb_state *mrb, mrb_value self)
 {
     mrb_int r, g, b;
@@ -755,6 +775,7 @@ void mrb_mruby_gd_gem_init(mrb_state* mrb)
     mrb_define_method(mrb, class_image, "fill", mrb_gd_image_fill, MRB_ARGS_REQ(3));
     mrb_define_method(mrb, class_image, "copy_rotated", mrb_gd_image_copy_rotated, MRB_ARGS_REQ(8));
     mrb_define_method(mrb, class_image, "copy_resized", mrb_gd_image_copy_resized, MRB_ARGS_REQ(9));
+    mrb_define_method(mrb, class_image, "copy_resampled", mrb_gd_image_copy_resampled, MRB_ARGS_REQ(9));
 
     mrb_define_method(mrb, class_image, "color_allocate", mrb_gd_color_allocate, MRB_ARGS_REQ(3));
     mrb_define_method(mrb, class_image, "color_allocate_alpha", mrb_gd_color_allocate_alpha, MRB_ARGS_REQ(4));
