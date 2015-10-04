@@ -717,7 +717,7 @@ static mrb_value mrb_gd_image_wbmp_file(mrb_state *mrb, mrb_value self)
     return self;
 }
 
-void mrb_GD_gem_init(mrb_state* mrb)
+void mrb_mruby_gd_gem_init(mrb_state* mrb)
 {
     struct RClass *module_gd;
     struct RClass *class_image;
@@ -770,6 +770,6 @@ void mrb_GD_gem_init(mrb_state* mrb)
     mrb_define_method(mrb, class_image, "color_deallocate", mrb_gd_color_deallocate, MRB_ARGS_REQ(1));
 }
 
-void mrb_GD_gem_final(mrb_state* mrb)
+void mrb_mruby_gd_gem_final(mrb_state* mrb)
 {
 }
