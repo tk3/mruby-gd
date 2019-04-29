@@ -109,7 +109,7 @@ static mrb_value mrb_gd_image_new_from_gif_file(mrb_state *mrb, mrb_value self)
 
     fin = fopen(filename, "rb");
     if (fin == NULL) {
-        return self;
+        mrb_raisef(mrb, E_RUNTIME_ERROR, "cannot open %S",  mrb_str_new_cstr(mrb,filename));
     }
 
     im = gdImageCreateFromGif(fin);
@@ -132,7 +132,7 @@ static mrb_value mrb_gd_image_new_from_png_file(mrb_state *mrb, mrb_value self)
 
     fin = fopen(filename, "rb");
     if (fin == NULL) {
-        return self;
+        mrb_raisef(mrb, E_RUNTIME_ERROR, "cannot open %S",  mrb_str_new_cstr(mrb,filename));
     }
 
     im = gdImageCreateFromPng(fin);
@@ -155,7 +155,7 @@ static mrb_value mrb_gd_image_new_from_jpeg_file(mrb_state *mrb, mrb_value self)
 
     fin = fopen(filename, "rb");
     if (fin == NULL) {
-        return self;
+        mrb_raisef(mrb, E_RUNTIME_ERROR, "cannot open %S",  mrb_str_new_cstr(mrb,filename));
     }
 
     im = gdImageCreateFromJpeg(fin);
@@ -178,7 +178,7 @@ static mrb_value mrb_gd_image_new_from_wbmp_file(mrb_state *mrb, mrb_value self)
 
     fin = fopen(filename, "rb");
     if (fin == NULL) {
-        return self;
+        mrb_raisef(mrb, E_RUNTIME_ERROR, "cannot open: %S",  mrb_str_new_cstr(mrb,filename));
     }
 
     im = gdImageCreateFromWBMP(fin);
